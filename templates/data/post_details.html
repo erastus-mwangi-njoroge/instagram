@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block head_content %}
+<title>{{ post.title }}</title>
+{% endblock %}
+
+{% block container %}
+
+<div class="container">
+    <div class="row">
+        {% include 'data/design.html' %}
+    </div>
+</div>
+
+{% endblock %}
