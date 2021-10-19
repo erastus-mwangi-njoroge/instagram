@@ -7,7 +7,7 @@ from cloudinary.models import CloudinaryField
 class Post(models.Model):
     profile = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    photo = CloudinaryField('media/photos')
+    photo = CloudinaryField('post/photos')
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 def __str__(self):
@@ -18,7 +18,7 @@ class Profile(models.Model):
     website = models.URLField(max_length=200, blank=True)
     biography = models.TextField(blank=True)
     phone_number = models.CharField(max_length=20, blank=True)
-    picture = CloudinaryField('media/pictures')
+    picture = CloudinaryField('post/pictures')
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
