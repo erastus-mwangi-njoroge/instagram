@@ -3,10 +3,12 @@ from django.contrib.auth import views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, FormView, UpdateView
+from django.views.generic import DetailView, FormView, UpdateView, ListView, DetailView, CreateView
 from django.contrib.auth.models import User
-from .forms import SignupForm
+from .forms import SignupForm,PostForm
 from .models import Post,Profile
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 # Create your views here.
@@ -60,3 +62,35 @@ class UserDetailView(DetailView):
         user = self.get_object()
         context['posts'] = Post.objects.filter(profile__user=user).order_by('-created')
         return context
+
+class CreatePostView(LoginRequiredMixin, CreateView):
+    
+    """Create New Post View"""
+    template_name = 'data/new_post.html'
+    form_class = PostForm
+    success_url = reverse_lazy('data:feed')
+    context_object_name = 'form'
+
+    def get_context_data(self, **kwargs):
+        """Add User and profile to context."""
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.request.user.profile
+        return context
+
+
+class PostFeedView(ListView):
+    """Return all published posts."""
+    template_name = 'data/all_posts.html'
+    model = Post
+    ordering = ('-created',)
+    paginate_by = 4
+    context_object_name = 'data'
+
+
+class PostDetailView(DetailView):
+    """Detail view posts"""
+    template_name = 'data/post_details.html'
+    slug_field = 'id'
+    slug_url_kwarg = 'post_id'
+    queryset = Post.objects.all()
+    context_object_name = 'post'

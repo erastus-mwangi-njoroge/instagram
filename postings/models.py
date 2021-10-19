@@ -10,9 +10,11 @@ class Post(models.Model):
     photo = CloudinaryField('post/photos')
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
 def __str__(self):
         """Return title and username"""
-        return "{} by @{}".format(self.title, self.profile.user.username)
+        return "{} by @{}".format(self.title, self.profile.user)
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     website = models.URLField(max_length=200, blank=True)

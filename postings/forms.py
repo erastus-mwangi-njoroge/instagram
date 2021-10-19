@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
+from .models import Profile, Post
 
 class SignupForm(forms.Form):
 
@@ -63,3 +63,10 @@ class SignupForm(forms.Form):
         user = User.objects.create_user(**data)
         profile = Profile(user=user)
         profile.save()
+class PostForm(forms.ModelForm):
+	"""Post model form"""
+
+	class Meta:
+		"""Form settings."""
+		model = Post
+		fields = ('profile', 'title', 'photo')
