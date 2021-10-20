@@ -66,9 +66,9 @@ class UserDetailView(DetailView):
 class CreatePostView(LoginRequiredMixin, CreateView):
     
     """Create New Post View"""
-    template_name = 'data/new_post.html'
+    template_name = 'posts/new_post.html'
     form_class = PostForm
-    success_url = reverse_lazy('data:feed')
+    success_url = reverse_lazy('posts:feed')
     context_object_name = 'form'
 
     def get_context_data(self, **kwargs):
@@ -80,16 +80,16 @@ class CreatePostView(LoginRequiredMixin, CreateView):
 
 class PostFeedView(ListView):
     """Return all published posts."""
-    template_name = 'data/all_posts.html'
+    template_name = 'posts/all_posts.html'
     model = Post
     ordering = ('-created',)
     paginate_by = 4
-    context_object_name = 'data'
+    context_object_name = 'feed'
 
 
 class PostDetailView(DetailView):
     """Detail view posts"""
-    template_name = 'data/post_details.html'
+    template_name = 'posts/post_details.html'
     slug_field = 'id'
     slug_url_kwarg = 'post_id'
     queryset = Post.objects.all()
