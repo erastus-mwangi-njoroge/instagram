@@ -3,6 +3,8 @@ from django.contrib.auth import views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import DetailView, FormView, UpdateView, ListView, DetailView, CreateView
 from django.contrib.auth.models import User
 from .forms import SignupForm,PostForm
@@ -17,7 +19,7 @@ class SignupView(FormView):
     """Signup View."""
     template_name = 'users/register.html'
     form_class = SignupForm
-    success_url = reverse_lazy('users:login')
+    success_url = reverse_lazy('postings:login')
 
     def form_valid(self, form):
         """If the form is valid save the user"""
@@ -45,10 +47,10 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         """Return to user's profile."""
         username = self.object.user.username
-        return reverse('users:detail', kwargs={'username_slug': username})
+        return reverse('postings:user_detail', kwargs={'username_slug': username})
 
 
-class UserDetailView(DetailView):
+class UserDetailView(LoginRequiredMixin, DetailView):
     """User detail view."""
     template_name = 'users/update.html'
     slug_field = 'username'
@@ -68,7 +70,7 @@ class CreatePostView(LoginRequiredMixin, CreateView):
     """Create New Post View"""
     template_name = 'posts/new_post.html'
     form_class = PostForm
-    success_url = reverse_lazy('posts:feed')
+    success_url = reverse_lazy('postings:feed')
     context_object_name = 'form'
 
     def get_context_data(self, **kwargs):
@@ -78,18 +80,19 @@ class CreatePostView(LoginRequiredMixin, CreateView):
         return context
 
 
-class PostFeedView(ListView):
+class PostFeedView(LoginRequiredMixin, ListView):
     """Return all published posts."""
-    template_name = 'posts/all_posts.html'
+    template_name = 'postings/all_posts.html'
     model = Post
     ordering = ('-created',)
     paginate_by = 4
-    context_object_name = 'feed'
+    context_object_name = 'posts'
 
 
-class PostDetailView(DetailView):
+
+class PostDetailView(LoginRequiredMixin, DetailView):
     """Detail view posts"""
-    template_name = 'posts/post_details.html'
+    template_name = 'postings/post_details.html'
     slug_field = 'id'
     slug_url_kwarg = 'post_id'
     queryset = Post.objects.all()
