@@ -25,5 +25,6 @@ class Profile(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        """Return username"""
+        if self.user.username==None:
+            return "ERROR-USER USERNAME IS NULL"
         return self.user.username

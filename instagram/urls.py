@@ -19,4 +19,5 @@ from django.conf.urls import include,url
 urlpatterns = [
     url(r'admin/', admin.site.urls),
     url(r'', include('postings.urls')),
+    #url(r'accounts/profile/', include('django_registration.backends.one_step.urls')),
 ]

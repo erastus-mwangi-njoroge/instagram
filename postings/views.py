@@ -62,13 +62,13 @@ class UserDetailView(LoginRequiredMixin, DetailView):
         """Add user's posts to context"""
         context = super().get_context_data(**kwargs)
         user = self.get_object()
-        context['posts'] = Post.objects.filter(profile__user=user).order_by('-created')
+        context['postings'] = Post.objects.filter(user=user).order_by('-created')
         return context
 
 class CreatePostView(LoginRequiredMixin, CreateView):
     
     """Create New Post View"""
-    template_name = 'posts/new_post.html'
+    template_name = 'postings/new_post.html'
     form_class = PostForm
     success_url = reverse_lazy('postings:feed')
     context_object_name = 'form'
@@ -87,7 +87,6 @@ class PostFeedView(LoginRequiredMixin, ListView):
     ordering = ('-created',)
     paginate_by = 4
     context_object_name = 'posts'
-
 
 
 class PostDetailView(LoginRequiredMixin, DetailView):
