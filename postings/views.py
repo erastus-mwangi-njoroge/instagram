@@ -1,7 +1,9 @@
 from django.contrib.auth import logout
 from django.contrib.auth import views
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import views as auth_views
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
 from django.urls import reverse, reverse_lazy
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import get_object_or_404, redirect, render
@@ -17,7 +19,7 @@ from django.utils.decorators import method_decorator
 
 class SignupView(FormView):
     """Signup View."""
-    template_name = 'users/register.html'
+    template_name = 'registration/register.html'
     form_class = SignupForm
     success_url = reverse_lazy('postings:login')
 
@@ -29,7 +31,7 @@ class SignupView(FormView):
 
 class LoginView(views.LoginView):
     """Login view"""
-    template_name = 'users/login.html'
+    template_name = 'registration/login.html'
     redirect_authenticated_user = True
 
 class LogoutView(LoginRequiredMixin, views.LogoutView):
@@ -37,7 +39,7 @@ class LogoutView(LoginRequiredMixin, views.LogoutView):
 
 class UpdateProfileView(LoginRequiredMixin, UpdateView):
     """Update a user's profile view"""
-    template_name = 'users/update_profile.html'
+    template_name = 'registration/update_profile.html'
     model = Profile
     fields = ['website', 'biography', 'phone_number', 'picture']
     # Return success url
@@ -52,7 +54,7 @@ class UpdateProfileView(LoginRequiredMixin, UpdateView):
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     """User detail view."""
-    template_name = 'users/update.html'
+    template_name = 'registration/update.html'
     slug_field = 'username'
     slug_url_kwarg = 'username_slug'
     queryset = User.objects.all()

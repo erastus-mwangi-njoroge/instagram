@@ -5,7 +5,8 @@ from cloudinary.models import CloudinaryField
 
 # Create your models here.
 class Post(models.Model):
-    profile = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    profile = models.ForeignKey('Profile', on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     photo = CloudinaryField('photos')
     created = models.DateTimeField(auto_now_add=True)

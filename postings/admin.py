@@ -7,16 +7,21 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib import admin
 from django.contrib.auth.models import User
 from .models import Post, Profile
-#admin.site.register(User, UserAdmin)
 
 
+class PostAdmin(admin.ModelAdmin):
+    """Post model admin."""
+    list_display = ('user', 'title', 'photo', )
+
+
+admin.site.register(Post, PostAdmin)
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    """Profile Admin"""
+    """ Profile Admin."""
     list_display = ('pk', 'user', 'phone_number', 'website', 'picture')
     list_display_links = ('pk', 'user')
-    list_editable = ('phone_number', 'website', 'picture')
+    list_editable = ('phone_number', 'website')
     search_fields = (
         'user__email',
         'user__username',
@@ -24,51 +29,51 @@ class ProfileAdmin(admin.ModelAdmin):
         'user__last_name',
         'phone_number'
     )
+
     list_filter = (
-        'user__is_active',
-        'user__is_staff',
         'created',
         'modified',
+        'user__is_active',
+        'user__is_staff'
     )
-    fieldsets = (
-        (
-            'Profile',
-            {
-                'fields': (('user', 'picture'),)
-            }
-        ),
 
-        (
-            'Extra info',
-            {
-                'fields': (
-                    ('phone_number', 'website'),
-                    ('biography'),
-                )
-            }
-        ),
-        (
-            'Metadata',
-            {
-                'fields': (('created', 'modified'),)
-            }
-        ),
+    fieldsets = (
+        ('Profile', {
+            'fields': (
+                ('user', 'picture'),
+            ),
+        }),
+        ('Extra info', {
+            'fields': (
+                ('website', 'phone_number'),
+                ('biography')
+            )
+        }),
+        ('Metadata', {
+            'fields': (
+                ('created', 'modified'),
+            ),
+        }),
     )
+
     readonly_fields = ('created', 'modified')
 
-class ProfileInline(admin.StackedInline):
-        """Profile in-line admin for users."""
-        model = Profile
-        can_delete = False
-        verbose_name_plural = 'profiles'
 
-#admin.site.register(User)
+class ProfileInline(admin.StackedInline):
+    """Profile in-line admin for users."""
+
+    model = Profile
+    can_delete = False
+    verbose_name_plural = 'profiles'
+
 
 class UserAdmin(BaseUserAdmin):
     """Add profile admin to base user admin."""
-    inlines = (ProfileInline, )
+
+    inlines = (ProfileInline,)
     list_display = (
         'username',
+        'email',
         'first_name',
         'last_name',
         'is_active',
@@ -76,26 +81,6 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 
-
-
-
-@admin.register(Post)
-class PostAdmin(admin.ModelAdmin):
-    """Post Admin"""
-    list_display = ('__str__', 'title', 'photo', 'created', 'modified')
-    readonly_fields = ('created', 'modified')
-    list_editable = ('title', 'photo')
-    search_fields = (
-        'profile__user__email',
-        'profile__user__username',
-        'profile__user__first_name',
-        'profile__user__last_name',
-        'title'
-    )
-    # list_filter = (
-    #     'profile__user__is_active',
-    #     'profile__user__is_staff',
-    #     'created',
-    #     'modified',
-    # )
